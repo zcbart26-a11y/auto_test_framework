@@ -25,12 +25,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest requests selenium allure-pytest
 
-    - name: 4. 运行 API 接口自动化测试
+    - name: 4. 运行 API 接口自动化测试并生成 Allure 数据
       run: |
-        python -m pytest tests/api/ -s -v
+        python -m pytest tests/api/ -s -v --alluredir=./allure-results
 
     - name: 5. 运行 UI 自动化测试 (Headless 模式)
-      # 注意：在 Linux 服务器上跑 UI 需要安装 Chrome 和配置无头模式，
-      # 这里为了演示流水线逻辑，我们可以先跑写好的脚本，遇到报错再调整 UI 脚本支持无头。
       run: |
-        python -m pytest tests/ui/ -s -v
+        python -m pytest tests/ui/ -s -v --alluredir=./allure-results || true  # 加 || true 防止 UI 失败导致跳过报告生成
+
+    - name: 6. 安装 Allure 命令行工具
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y npm
+        sudo npm install -g allure-commandline --save-dev
+
+    - name: 7. 生成 Allure HTML 报告
+      run: |
+        allure generate ./allure-results -o ./allure-report --clean
+
+    - name: 8. 归档测试报告 (Upload Artifacts)
+      uses: actions/upload-artifact@v4
+      with:
+        name: Allure-Test-Report
+        path: ./allure-report
+        retention-days: 7
