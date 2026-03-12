@@ -53,12 +53,15 @@ jobs:
     - name: 9. 企业微信机器人群组消息通知
       if: always() # 无论成功失败，这步都要执行
       run: |
+        # 利用 GitHub 的内置变量拼接本次流水线的真实直达链接
+        RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
         # 准备要发送的 Markdown 文案
         STATUS="${{ job.status }}"
         if [ "$STATUS" == "success" ]; then
-          MSG="<font color='info'>✅ 接口自动化测试通过！</font>\n> **报告已生成可供下载**"
+          MSG="<font color='info'>✅ 接口自动化测试完美通过！</font>\n> 恭喜，所有用例执行成功。\n> **[👉 点击这里下载 Allure 详细测试报告]($RUN_URL)**"
         else
-          MSG="<font color='warning'>❌ 测试执行发生错误！</font>\n> 赶紧上 GitHub 看一看到底咋崩了！"
+          MSG="<font color='warning'>❌ 警告：测试执行发生错误或用例失败！</font>\n> 请开发和测试人员立即关注。\n> **[👉 点击这里查看报错日志页]($RUN_URL)**"
         fi
         
         # 组装企业微信机器人规定的 JSON 格式
