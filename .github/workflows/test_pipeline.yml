@@ -49,3 +49,26 @@ jobs:
         name: Allure-Test-Report
         path: ./allure-report
         retention-days: 7
+
+    - name: 9. 企业微信机器人群组消息通知
+      if: always() # 无论成功失败，这步都要执行
+      run: |
+        # 准备要发送的 Markdown 文案
+        STATUS="${{ job.status }}"
+        if [ "$STATUS" == "success" ]; then
+          MSG="<font color='info'>✅ 接口自动化测试通过！</font>\n> **报告已生成可供下载**"
+        else
+          MSG="<font color='warning'>❌ 测试执行发生错误！</font>\n> 赶紧上 GitHub 看一看到底咋崩了！"
+        fi
+        
+        # 组装企业微信机器人规定的 JSON 格式
+        JSON_DATA="{\"msgtype\": \"markdown\",\"markdown\": {\"content\": \"$MSG\"}}"
+        
+        # 把这段 JSON 用 POST 方法送到你的专属企微机器人链接里
+        # 注意: 现实中 WECHAT_WEBHOOK 我们会存放在 GitHub Secrets 里，这里我暂时写一个假地址。
+        # 你回头只要把这个 URL 换成真的就可以了！
+        curl -X POST \
+        "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=12345678-你的专属-KEY" \
+        -H "Content-Type: application/json" \
+        -d "$JSON_DATA"
+
