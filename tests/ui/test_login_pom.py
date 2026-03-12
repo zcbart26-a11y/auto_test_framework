@@ -10,8 +10,12 @@ def test_login_success():
     用 POM 模式重构的测试用例
     这里只有“测试逻辑”和“断言”，完全看不到复杂的元素定位(find_element)
     """
-    print("\n[POM 模式测试] 启动浏览器...")
-    driver = webdriver.Chrome()
+    print("\n[POM 模式测试] 启动浏览器(无头模式)...")
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-gpu")
+    driver = webdriver.Chrome(options=options)
     
     try:
         # 1. 实例化我们的 Page Object (页面对象)

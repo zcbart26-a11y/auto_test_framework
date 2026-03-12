@@ -7,10 +7,14 @@ import time
 
 def test_saucedemo_login():
     """我们的第一个 UI 自动化脚本：打开一个电商沙盒网站并自动登录"""
-    print("\n[UI 自动化] 准备启动浏览器...")
+    print("\n[UI 自动化] 准备启动浏览器(无头模式)...")
     
-    # 初始化 Chrome 浏览器实例 (这会自动弹出一个真实的谷歌浏览器)
-    driver = webdriver.Chrome()
+    # 初始化 Chrome 浏览器实例，为了在 Linux(GitHub Actions) 上运行，必须加上无头模式
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--disable-gpu")
+    driver = webdriver.Chrome(options=options)
     
     try:
         # 为了能看清楚它的自动操作，我们让它动作慢一点
