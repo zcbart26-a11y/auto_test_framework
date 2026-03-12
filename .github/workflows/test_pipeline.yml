@@ -68,7 +68,7 @@ jobs:
         # 注意: 现实中 WECHAT_WEBHOOK 我们会存放在 GitHub Secrets 里，这里我暂时写一个假地址。
         # 你回头只要把这个 URL 换成真的就可以了！
         curl -X POST \
-        "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=12345678-你的专属-KEY" \
+        "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=cd524117-0ea9-4f61-97a0-57f8db5421dd" \
         -H "Content-Type: application/json" \
         -d "$JSON_DATA"
 
